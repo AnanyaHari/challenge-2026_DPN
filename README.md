@@ -6,11 +6,11 @@ couple of read endpoints are wired up for you. The rest is yours to build.
 
 ## Stack
 
-| Layer    | Tech                                              |
-| -------- | ------------------------------------------------- |
-| App      | Next.js 14 (App Router), TypeScript, Tailwind     |
-| API      | Next.js Route Handlers (`app/api/*`), TypeScript  |
-| Database | PostgreSQL (`pg`)                                 |
+| Layer    | Tech                                             |
+| -------- | ------------------------------------------------ |
+| App      | Next.js 14 (App Router), TypeScript, Tailwind    |
+| API      | Next.js Route Handlers (`app/api/*`), TypeScript |
+| Database | PostgreSQL (`pg`)                                |
 
 One Next.js app serves both the UI and the REST API. There is no separate
 backend server: the API lives in route handlers under `app/api/`.
@@ -33,7 +33,7 @@ seed script; `lib/` has the frontend fetch client and a shared error helper.
 
 ## Quick start
 
-**Start by forking this repo** (GitHub > **Fork**) and keep your fork
+**Start by using this template repo** and keep your repo public
 **public** - the link to it is what you submit. Then install
 [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure
 it's open and running.

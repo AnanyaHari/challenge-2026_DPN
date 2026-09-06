@@ -3,19 +3,18 @@
 Get Feeding Brennen running locally. It's a single Next.js app (UI + API) plus a
 PostgreSQL database in Docker. Two commands, a few minutes.
 
-## Step 0: fork the repo
+## Step 0: use the template repo (use template in the top right)
 
-Before anything else, **fork this repository to your own GitHub account**
-(GitHub > **Fork**), and leave the fork **public**. You'll work in your fork,
+Before anything else, **use this template to create your own repo**, and leave the repo **public**. You'll work in your fork,
 and the link to it is what you hand in on the
 [submission form](https://forms.gle/sLZHGrs5FQvX4VjHA). Don't clone this
 repo directly - you won't be able to push to it.
 
 ## Prerequisites
 
-| Tool                    | Version | Download | Notes |
-|-------------------------|---------|----------|-------|
-| Node.js                 | 18+     | [nodejs.org](https://nodejs.org/) | Required |
+| Tool                    | Version | Download                                                          | Notes                                                           |
+| ----------------------- | ------- | ----------------------------------------------------------------- | --------------------------------------------------------------- |
+| Node.js                 | 18+     | [nodejs.org](https://nodejs.org/)                                 | Required                                                        |
 | Docker + Docker Compose | 20.10+  | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Required - runs PostgreSQL.<br>Docker Desktop includes Compose. |
 
 **Install Docker Desktop if you don't already have it**, and **make sure it's
@@ -83,12 +82,12 @@ error, a blank terminal - is a real setup problem. See Troubleshooting below.
 
 ## Expected URLs
 
-| What            | URL                               |
-| --------------- | --------------------------------- |
-| App (UI)        | http://localhost:3000             |
-| API base        | http://localhost:3000/api         |
-| Health check    | http://localhost:3000/api/health  |
-| Restaurants     | http://localhost:3000/api/restaurants |
+| What         | URL                                   |
+| ------------ | ------------------------------------- |
+| App (UI)     | http://localhost:3000                 |
+| API base     | http://localhost:3000/api             |
+| Health check | http://localhost:3000/api/health      |
+| Restaurants  | http://localhost:3000/api/restaurants |
 
 ---
 
@@ -96,12 +95,12 @@ error, a blank terminal - is a real setup problem. See Troubleshooting below.
 
 You don't need this to get started - it's here so nothing is a black box.
 
-| Step | Command | Why |
-| ---- | ------- | --- |
-| Start the database | `docker compose up -d` | Runs PostgreSQL 16 on `localhost:5432`, pre-configured with the right user, password, and database name. |
-| Install dependencies | `npm install` (in `client/`) | Standard. |
-| Create tables | `npm run migrate` (in `client/`) | Applies `client/db/migrations/*.sql`. Prints `Applied 1 migration(s).` |
-| Load sample data | `npm run seed` (in `client/`) | Loads 5 restaurants and 3 visits. Prints `Seeded 5 restaurants and 3 visits.` |
+| Step                 | Command                          | Why                                                                                                      |
+| -------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Start the database   | `docker compose up -d`           | Runs PostgreSQL 16 on `localhost:5432`, pre-configured with the right user, password, and database name. |
+| Install dependencies | `npm install` (in `client/`)     | Standard.                                                                                                |
+| Create tables        | `npm run migrate` (in `client/`) | Applies `client/db/migrations/*.sql`. Prints `Applied 1 migration(s).`                                   |
+| Load sample data     | `npm run seed` (in `client/`)    | Loads 5 restaurants and 3 visits. Prints `Seeded 5 restaurants and 3 visits.`                            |
 
 Run any of them individually whenever you need to - re-seed after you've made a
 mess of the data, re-migrate after you add a migration.
@@ -123,10 +122,10 @@ There is **no `.env` to set up**. The app defaults to the database that
 If you do need to point somewhere else - a different port, or a Postgres you
 manage yourself - create `client/.env` (see `client/.env.example`):
 
-| Variable | Default | What it's for |
-| -------- | ------- | ------------- |
-| `DATABASE_URL` | `postgresql://postgres:postgres@localhost:5432/feeding_brennen` | Used by the API route handlers and the migrate/seed scripts. |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:3000` | The origin the frontend uses to call the app's own API. Change it only if you run on a different port. |
+| Variable              | Default                                                         | What it's for                                                                                          |
+| --------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `DATABASE_URL`        | `postgresql://postgres:postgres@localhost:5432/feeding_brennen` | Used by the API route handlers and the migrate/seed scripts.                                           |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:3000`                                         | The origin the frontend uses to call the app's own API. Change it only if you run on a different port. |
 
 ---
 
@@ -168,7 +167,7 @@ docker rm -f <container-name>
 ./setup.sh
 ```
 
-Note this is a *different* problem from the port conflict above, even though
+Note this is a _different_ problem from the port conflict above, even though
 both stop the database from starting. Read the Docker error text to tell them
 apart: "port is already allocated" vs. "container name ... already in use".
 

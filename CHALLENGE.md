@@ -27,7 +27,7 @@ tells us plenty.
 
 ## Before you start
 
-**Fork this repo to your own GitHub account and keep the fork public** - you'll
+**Fork this repo to your own GitHub account and keep the repo public** - you'll
 work there, and the link to it is what you submit. Then install
 [Docker Desktop](https://www.docker.com/products/docker-desktop/) and start it;
 the database runs in Docker, so nothing works without it.
@@ -132,7 +132,7 @@ check against.
 | Method and path               | Success                                | Errors                                                            |
 | ----------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
 | `GET /api/restaurants`        | `200` + JSON array                     | -                                                                 |
-| `GET /api/restaurants/:id`    | `200` + restaurant                     | `404` if missing *or* if `:id` isn't a positive integer            |
+| `GET /api/restaurants/:id`    | `200` + restaurant                     | `404` if missing _or_ if `:id` isn't a positive integer           |
 | `POST /api/restaurants`       | `201` + created restaurant (with `id`) | `400` on invalid body (missing `name`, `rating` outside 0-5, ...) |
 | `PUT /api/restaurants/:id`    | `200` + updated restaurant             | `404` if missing, `400` on invalid body                           |
 | `DELETE /api/restaurants/:id` | `204`, no body                         | `404` if missing                                                  |
@@ -185,7 +185,7 @@ a required process - if you already know what you want to build, go build it.
 You can add migrations, add tables, change the schema, pull in a library - all
 fair game. Just say so in `WriteUp.md`.
 
-**One gotcha if you touch the schema:** add a *new* migration file
+**One gotcha if you touch the schema:** add a _new_ migration file
 (`client/db/migrations/002_your_change.sql`) rather than editing
 `001_create_tables.sql`. The runner has no ledger and 001 is written with
 `CREATE TABLE IF NOT EXISTS`, so on a database that already has the tables an
@@ -291,6 +291,7 @@ This is the part we're most interested in.
    - how you verified your work.
 
    The PR description can just point at it.
+
 3. Push everything to your fork, then **submit the link to your public fork on
    the [submission form](https://forms.gle/sLZHGrs5FQvX4VjHA)**. Open the link in a
    private/incognito window first to confirm the repo is actually public - we
