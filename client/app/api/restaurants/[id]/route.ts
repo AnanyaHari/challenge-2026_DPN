@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/db/pool';
-import { handleError } from '@/lib/errors';
 import { toRestaurant } from '@/lib/types';
-
+import { ApiError, handleError} from '@/lib/errors';
+import {
+  validateRestaurantBody,
+  validateRestaurantId,
+} from '@/lib/restaurantValidation';
 type Params = { params: { id: string } };
 
 /**
@@ -11,14 +14,24 @@ type Params = { params: { id: string } };
  */
 export async function GET(_req: Request, { params }: Params) {
   try {
+    const id = validateRestaurantId(params.id);
     const { rows } = await pool.query(
-      'SELECT * FROM restaurants WHERE id = $1',
-      [params.id]
-    );
+  `SELECT
+     id,
+     name,
+     cuisine,
+     address,
+     rating,
+     created_at AS "createdAt"
+   FROM restaurants
+   WHERE id = $1`,
+  [id]
+);
 
     if (rows.length === 0) {
-      return NextResponse.json({ error: 'Restaurant not found' }, { status: 404 });
+      throw new ApiError(404, 'Restaurant not found');
     }
+
 
     return NextResponse.json(toRestaurant(rows[0]));
   } catch (err) {
@@ -33,8 +46,41 @@ export async function GET(_req: Request, { params }: Params) {
  * TODO (A2): implement. Update the row matching :id and return the updated
  * record (or 404 if it doesn't exist). Validate the body the same way POST does.
  */
-export async function PUT(_req: Request, _ctx: Params) {
-  return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
+export async function PUT(_req: Request, _ctx: Params) { 
+  try {
+    //gets id and validates
+    const id = validateRestaurantId(_ctx.params.id);
+    //reads and validates json
+    const body: unknown = await _req.json();
+    const { name, cuisine, address, rating } =
+      validateRestaurantBody(body);
+
+      //uodates resturant whos id matches the url
+    const { rows } = await pool.query(
+      `UPDATE restaurants
+       SET name = $1,
+           cuisine = $2,
+           address = $3,
+           rating = $4
+       WHERE id = $5
+       RETURNING
+         id,
+         name,
+         cuisine,
+         address,
+         rating,
+         created_at AS "createdAt"`,
+      [name, cuisine, address, rating, id]
+    );
+    //if no rest exists, then erorr
+    if (rows.length === 0) {
+      throw new ApiError(404, 'Restaurant not found');
+    }
+    //converts to response shape, catches any errors
+    return NextResponse.json(toRestaurant(rows[0]));
+  } catch (err) {
+    return handleError(err);
+  }
 }
 
 /**
@@ -48,6 +94,26 @@ export async function PUT(_req: Request, _ctx: Params) {
  * restaurant's visits. Go read it. If you disagree with it, say so in your
  * write-up.
  */
+//deletes a rest adn returns 204
 export async function DELETE(_req: Request, _ctx: Params) {
-  return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
+  try {
+    //gets if and validates
+      const id = validateRestaurantId(_ctx.params.id);
+    const { rows } = await pool.query(
+      //deletes restaurant w matching id
+      `DELETE FROM restaurants
+       WHERE id = $1
+       RETURNING id`,
+      [id]
+    );
+    //error if no matchinf rest
+    if (rows.length === 0) {
+      throw new ApiError(404, 'Restaurant not found');
+    }
+
+    //returns 204 if all good
+    return new Response(null, { status: 204 });
+  } catch (err) {
+    return handleError(err);
+  }
 }

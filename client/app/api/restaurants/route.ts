@@ -2,20 +2,29 @@ import { NextResponse } from 'next/server';
 import { pool } from '@/db/pool';
 import { handleError } from '@/lib/errors';
 import { toRestaurant } from '@/lib/types';
+import { validateRestaurantBody } from '@/lib/restaurantValidation';
 
 /**
  * GET /api/restaurants
  * Returns all restaurants.
  */
-export async function GET() {
+export async function GET() { // gets restaurants from newest to oldest
   try {
-    const { rows } = await pool.query(
-      'SELECT * FROM restaurants ORDER BY createdAt DESC'
-    );
-    // Map every row - raw rows don't match the contract (NUMERIC comes back
-    // as a string, timestamps as Date objects). See lib/types.ts.
+    const { rows } = await pool.query( //get fields needed by api from resturants table
+  `SELECT
+     id,
+     name,
+     cuisine,
+     address,
+     rating,
+     created_at AS "createdAt"
+   FROM restaurants
+   ORDER BY created_at DESC`
+);
+// convert each sql row to resturant api shape
     return NextResponse.json(rows.map(toRestaurant));
   } catch (err) {
+    //handle any errors
     return handleError(err);
   }
 }
@@ -31,6 +40,36 @@ export async function GET() {
  * `rating` happily accepts 6. Decide what valid means for each field and reject
  * bad bodies with a 400 rather than letting them reach the database.
  */
-export async function POST(_req: Request) {
-  return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
+export async function POST(_req: Request) { //validates request and creates new resturant 
+  try {
+    const body = await _req.json(); // convert in to JS val
+
+    //validate fields and set vars = to the input values
+    const { name, cuisine, address, rating } = validateRestaurantBody(body);
+
+    //insert into restaurants table
+    const { rows } = await pool.query(
+      `INSERT INTO restaurants (name, cuisine, address, rating)
+       VALUES ($1, $2, $3, $4)
+       RETURNING
+         id,
+         name,
+         cuisine,
+         address,
+         rating,
+         created_at AS "createdAt"`,
+      [
+        //correspond to 1,2,3,and 4
+        name,
+        cuisine ?? null,
+        address ?? null,
+        rating ?? null,
+      ]
+    );
+    //database row to response shape; 201 = good
+    return NextResponse.json(toRestaurant(rows[0]), { status: 201 });
+  } catch (err) {
+    //handle errors
+    return handleError(err);
+  }
 }
