@@ -69,8 +69,7 @@ $ curl -i -X DELETE http://localhost:3000/api/restaurants/10 - 204
 $ curl -i -X DELETE http://localhost:3000/api/restaurants/10 - 404
 $ curl -i -X DELETE http://localhost:3000/api/restaurants/9 - 204
 $ curl -i -X DELETE http://localhost:3000/api/restaurants/8 - 204
-$ curl -i -X DELETE http://localhost:3000/api/restaurants/7
-HTTP/1.1 204
+$ curl -i -X DELETE http://localhost:3000/api/restaurants/7 - 204
 $ curl -i -X DELETE http://localhost:3000/api/restaurants/6 - 204
 
 ```
